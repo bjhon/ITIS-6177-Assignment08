@@ -82,7 +82,7 @@ app.post('/agents', async (req, res) => {
         const { AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY } = req.body;
         // Insert new agent in database
         const conn = await pool.getConnection();
-        const result = await conn.query("INSERT INTO agents (AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY) VALUES (?, ?, ?, ?, ?, ?)", [AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY]);
+        const result = await conn.query("INSERT INTO agents (AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY) VALUES (1234, Bianca, New Jersey, 0.15, 001-20304)", [AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY]);
         conn.release();
         res.json({ message: "Agent created successfully", agent: req.body });
     } catch (err) {
@@ -96,7 +96,7 @@ app.post('/costumers', async (req, res) => {
         const { AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY } = req.body;
         // Insert the new customer into the database
         const conn = await pool.getConnection();
-        const result = await conn.query("INSERT INTO customer (CUST_CODE, CUST_NAME, CUST_CITY, WORKING_AREA, CUST_COUNTRY, GRADE, OPENING_AMT, RECEIVE_AMT, PAYMENT_AMT, OUTSTANDING_AMT, PHONE_NO, AGENT_CODE) VALUES (2, 4, 6, 8, 10)", [CUST_CODE, CUST_NAME, CUST_CITY, WORKING_AREA, CUST_COUNTRY, GRADE, OPENING_AMT, RECEIVE_AMT, PAYMENT_AMT, OUTSTANDING_AMT, PHONE_NO, AGENT_CODE]);
+        const result = await conn.query("INSERT INTO customer (CUST_CODE, CUST_NAME, CUST_CITY, WORKING_AREA, CUST_COUNTRY, GRADE, OPENING_AMT, RECEIVE_AMT, PAYMENT_AMT, OUTSTANDING_AMT, PHONE_NO, AGENT_CODE) VALUES (123456, Regina, Charlotte, Charlotte, USA, 1, 10000.00, 7000.00, 7000.00, 8000.00, ABCDEFG, A111)", [CUST_CODE, CUST_NAME, CUST_CITY, WORKING_AREA, CUST_COUNTRY, GRADE, OPENING_AMT, RECEIVE_AMT, PAYMENT_AMT, OUTSTANDING_AMT, PHONE_NO, AGENT_CODE]);
         conn.release();
         res.json({ message: "Agent created successfully", agent: req.body });
     } catch (err) {
@@ -188,5 +188,6 @@ app.listen(port, () => {
 
 //reference: https://www.youtube.com/watch?v=_YA9yII8a3M&ab_channel=EddieJaoude
 //&& https://expressjs.com/en/api.html#req
+// https://www.w3schools.com/sql/sql_ref_values.asp
 
 
