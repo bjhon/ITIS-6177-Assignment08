@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = 3001;
 
 const mariadb = require('mariadb');
 const { hasUncaughtExceptionCaptureCallback } = require('process');
@@ -172,18 +172,17 @@ app.use(cors());
 /**
  * @swagger
  * /definition:
- *    openapi:
  *      info: 
- *          title: Return all prices
+ *          title: Return all
  *      produces:
  *         -application/json
  *      responses:
  *         200:
- *             description: Object food containing array of food obj prices
+ *             description: Object info containing array of item obj 
  * 
  */
 app.listen(port, () => {
-    console.log(`Server is listening on port ${port}`);
+    console.log(`Server is listening on port ${3001}`);
 });
 
 //reference: https://www.youtube.com/watch?v=_YA9yII8a3M&ab_channel=EddieJaoude
