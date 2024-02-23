@@ -3,6 +3,9 @@ const app = express();
 const port = 3001;
 
 const mariadb = require('mariadb');
+const cors = require('cors');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const { hasUncaughtExceptionCaptureCallback } = require('process');
 const { isNullOrUndefined } = require('util');
 const pool = mariadb.createPool({
