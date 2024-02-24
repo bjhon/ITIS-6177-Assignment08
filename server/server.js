@@ -85,7 +85,7 @@ app.post('/agents', async (req, res) => {
         const { AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY } = req.body;
         // Insert new agent in database
         const conn = await pool.getConnection();
-        const result = await conn.query("INSERT INTO agents (AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY) VALUES (1234, Bianca, New Jersey, 0.15, 001-20304)", [AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY]);
+        const result = await conn.query("INSERT INTO agents (AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY) VALUES (?,?,?,?,?,?)", [AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY]);
         conn.release();
         res.json({ message: "Agent created successfully", agent: req.body });
     } catch (err) {
@@ -96,12 +96,12 @@ app.post('/agents', async (req, res) => {
 app.post('/costumers', async (req, res) => {
     try {
         //  customer data from request body
-        const { AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY } = req.body;
+        const { CUST_CODE, CUST_NAME, CUST_CITY, WORKING_AREA, CUST_COUNTRY, GRADE, OPENING_AMT, RECEIVE_AMT, PAYMENT_AMT, OUTSTANDING_AMT, PHONE_NO, AGENT_CODE } = req.body;
         // Insert the new customer into the database
         const conn = await pool.getConnection();
-        const result = await conn.query("INSERT INTO customer (CUST_CODE, CUST_NAME, CUST_CITY, WORKING_AREA, CUST_COUNTRY, GRADE, OPENING_AMT, RECEIVE_AMT, PAYMENT_AMT, OUTSTANDING_AMT, PHONE_NO, AGENT_CODE) VALUES (123456, Regina, Charlotte, Charlotte, USA, 1, 10000.00, 7000.00, 7000.00, 8000.00, ABCDEFG, A111)", [CUST_CODE, CUST_NAME, CUST_CITY, WORKING_AREA, CUST_COUNTRY, GRADE, OPENING_AMT, RECEIVE_AMT, PAYMENT_AMT, OUTSTANDING_AMT, PHONE_NO, AGENT_CODE]);
+        const result = await conn.query("INSERT INTO customer (CUST_CODE, CUST_NAME, CUST_CITY, WORKING_AREA, CUST_COUNTRY, GRADE, OPENING_AMT, RECEIVE_AMT, PAYMENT_AMT, OUTSTANDING_AMT, PHONE_NO, AGENT_CODE) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", [CUST_CODE, CUST_NAME, CUST_CITY, WORKING_AREA, CUST_COUNTRY, GRADE, OPENING_AMT, RECEIVE_AMT, PAYMENT_AMT, OUTSTANDING_AMT, PHONE_NO, AGENT_CODE]);
         conn.release();
-        res.json({ message: "Agent created successfully", agent: req.body });
+        res.json({ message: "Customer created successfully", agent: req.body });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -112,10 +112,10 @@ app.patch('/agents/:AGENT_CODE', async (req, res) => {
     try {
         const AGENT_CODE = req.params.AGENT_CODE;
         // agent data from request
-        const { AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY } = req.body;
+        const { AGENT_NAME } = req.body;
         // Update the agent database
         const conn = await pool.getConnection();
-        const result = await conn.query("UPDATE agents SET AGENT_NAME=Ravi Kumar, WORKING_AREA=Bangalore, COMMISSION=0.15, PHONE_NO=077-45625874, COUNTRY=?? WHERE AGENT_CODE=A011", [AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY, AGENT_CODE]);
+        const result = await conn.query("UPDATE agents SET AGENT_NAME=?", [AGENT_NAME]);
         conn.release();
         res.json({ message: "Agent updated successfully", agent: req.body });
     } catch (err) {
@@ -131,7 +131,7 @@ app.put('/agents/:AGENT_CODE', async (req, res) => {
         const { AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY } = req.body;
         // Replace or insert the agent into the database
         const conn = await pool.getConnection();
-        const result = await conn.query("REPLACE INTO agents (AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY) VALUES (Ramasundar, San Jose, Hampshair)", [AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY]);
+        const result = await conn.query("UPDATE agents (AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY) VALUES (?,?,?,?,?,?)", [AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY]);
         conn.release();
         res.json({ message: "Agent replaced or created successfully", agent: req.body });
     } catch (err) {
@@ -145,7 +145,7 @@ app.delete('/agents/:AGENT_CODE', async (req, res) => {
         const AGENT_CODE = req.params.AGENT_CODE;
         // Delete agent from database
         const conn = await pool.getConnection();
-        const result = await conn.query("DELETE FROM agents WHERE AGENT_CODE=A004", [AGENT_CODE]);
+        const result = await conn.query("DELETE FROM agents WHERE AGENT_CODE=?", [AGENT_CODE]);
         conn.release();
         res.json({ message: "Agent deleted successfully" });
     } catch (err) {
@@ -185,7 +185,7 @@ app.use(cors());
  * 
  */
 app.listen(port, () => {
-    console.log(`Server is listening on port ${3001}`);
+    console.log(`Server is listening on port ${port}`);
 });
 
 //reference: https://www.youtube.com/watch?v=_YA9yII8a3M&ab_channel=EddieJaoude
