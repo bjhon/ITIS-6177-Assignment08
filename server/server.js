@@ -190,34 +190,6 @@ app.use(cors());
  *         type: string
  *       COUNTRY:
  *         type: string
- *
- *   Customer:
- *     type: object
- *     properties:
- *       CUST_CODE:
- *         type: string
- *       CUST_NAME:
- *         type: string
- *       CUST_CITY:
- *         type: string
- *       WORKING_AREA:
- *         type: string
- *       CUST_COUNTRY:
- *         type: string
- *       GRADE:
- *         type: integer
- *       OPENING_AMT:
- *         type: number
- *       RECEIVE_AMT:
- *         type: number
- *       PAYMENT_AMT:
- *         type: number
- *       OUTSTANDING_AMT:
- *         type: number
- *       PHONE_NO:
- *         type: string
- *       AGENT_CODE:
- *         type: string
  */
 
 /**
