@@ -67,7 +67,7 @@ app.get('/orders', async (req, res) => {
     }
 });
 
-// GET student-reports table
+// GET student-reports table.
 app.get('/student-reports', async (req, res) => {
     try {
         const conn = await pool.getConnection();
@@ -79,6 +79,7 @@ app.get('/student-reports', async (req, res) => {
     }
 });
 
+//POST request.
 app.post('/agents', async (req, res) => {
     try {
         // take agent data from request body
@@ -93,7 +94,8 @@ app.post('/agents', async (req, res) => {
     }
 });
 
-app.post('/costumers', async (req, res) => {
+//POST request.
+app.post('/customers', async (req, res) => {
     try {
         //  customer data from request body
         const { CUST_CODE, CUST_NAME, CUST_CITY, WORKING_AREA, CUST_COUNTRY, GRADE, OPENING_AMT, RECEIVE_AMT, PAYMENT_AMT, OUTSTANDING_AMT, PHONE_NO, AGENT_CODE } = req.body;
@@ -107,7 +109,7 @@ app.post('/costumers', async (req, res) => {
     }
 });
 
-// PATCH request to update existing agent
+// PATCH request to update existing agent.
 app.patch('/agents/:AGENT_CODE', async (req, res) => {
     try {
         const AGENT_CODE = req.params.AGENT_CODE;
@@ -124,22 +126,20 @@ app.patch('/agents/:AGENT_CODE', async (req, res) => {
 });
 
 // PUT request to replace existing agent or to create new
-app.put('/agents/:AGENT_CODE', async (req, res) => {
+app.put('/agents/:id', async (req, res) => {
     try {
-        const AGENT_CODE = req.params.AGENT_CODE;
-        // Extract agent data from request body
-        const { AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY } = req.body;
-        // Replace or insert the agent into the database
+        const { AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY, AGENT_CODE } = req.body; // Ensure AGENT_CODE is provided
         const conn = await pool.getConnection();
-        const result = await conn.query("UPDATE agents (AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY) VALUES (?,?,?,?,?,?)", [AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY]);
+        const result = await conn.query("REPLACE INTO agents (AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY) VALUES (?, ?, ?, ?, ?, ?)",
+            [AGENT_CODE, AGENT_NAME, WORKING_AREA, COMMISSION, PHONE_NO, COUNTRY]); // Include AGENT_CODE in the parameter list
         conn.release();
-        res.json({ message: "Agent replaced or created successfully", agent: req.body });
+        res.json({ message: 'Agent replaced successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// DELETE request to delete agent
+// DELETE request to delete agent.
 app.delete('/agents/:AGENT_CODE', async (req, res) => {
     try {
         const AGENT_CODE = req.params.AGENT_CODE;
@@ -174,15 +174,244 @@ app.use(cors());
 
 /**
  * @swagger
- * /definition:
- *      info: 
- *          title: Return all
- *      produces:
- *         -application/json
- *      responses:
- *         200:
- *             description: Object info containing array of item obj 
- * 
+ * definitions:
+ *   Agent:
+ *     type: object
+ *     properties:
+ *       AGENT_CODE:
+ *         type: string
+ *       AGENT_NAME:
+ *         type: string
+ *       WORKING_AREA:
+ *         type: string
+ *       COMMISSION:
+ *         type: number
+ *       PHONE_NO:
+ *         type: string
+ *       COUNTRY:
+ *         type: string
+ *
+ *   Customer:
+ *     type: object
+ *     properties:
+ *       CUST_CODE:
+ *         type: string
+ *       CUST_NAME:
+ *         type: string
+ *       CUST_CITY:
+ *         type: string
+ *       WORKING_AREA:
+ *         type: string
+ *       CUST_COUNTRY:
+ *         type: string
+ *       GRADE:
+ *         type: integer
+ *       OPENING_AMT:
+ *         type: number
+ *       RECEIVE_AMT:
+ *         type: number
+ *       PAYMENT_AMT:
+ *         type: number
+ *       OUTSTANDING_AMT:
+ *         type: number
+ *       PHONE_NO:
+ *         type: string
+ *       AGENT_CODE:
+ *         type: string
+ */
+
+/**
+ * @swagger
+ * /agents:
+ *   get:
+ *     summary: Retrieve a list of agents
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: An array of agents
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Agent'
+ *
+ *   post:
+ *     summary: Create a new agent
+ *     parameters:
+ *       - in: body
+ *         name: agent
+ *         description: The agent to create
+ *         schema:
+ *           $ref: '#/definitions/Agent'
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ *       400:
+ *         description: Invalid input
+ */
+
+/**
+ * @swagger
+ * /agents/{id}:
+ *   put:
+ *     summary: Replace an existing agent
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         type: string
+ *         required: true
+ *       - in: body
+ *         name: agent
+ *         description: The updated agent information
+ *         schema:
+ *           $ref: '#/definitions/Agent'
+ *     responses:
+ *       200:
+ *         description: Successfully replaced
+ *       404:
+ *         description: Agent not found
+ *       400:
+ *         description: Invalid input
+ *
+ *   patch:
+ *     summary: Update an existing agent
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         type: string
+ *         required: true
+ *       - in: body
+ *         name: agent
+ *         description: The fields to update
+ *         schema:
+ *           type: object
+ *           properties:
+ *             AGENT_NAME:
+ *               type: string
+ *             WORKING_AREA:
+ *               type: string
+ *             COMMISSION:
+ *               type: number
+ *             PHONE_NO:
+ *               type: string
+ *             COUNTRY:
+ *               type: string
+ *     responses:
+ *       200:
+ *         description: Successfully updated
+ *       404:
+ *         description: Agent not found
+ *       400:
+ *         description: Invalid input
+ *
+ *   delete:
+ *     summary: Delete an existing agent
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         type: string
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Successfully deleted
+ *       404:
+ *         description: Agent not found
+ */
+/**
+ * @swagger
+ * /customers/{id}:
+ *   get:
+ *     summary: Retrieve a customer by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         type: string
+ *         required: true
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: A single customer
+ *         schema:
+ *           $ref: '#/definitions/Customer'
+ *       404:
+ *         description: Customer not found
+ *
+ *   put:
+ *     summary: Replace an existing customer
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         type: string
+ *         required: true
+ *       - in: body
+ *         name: customer
+ *         description: The updated customer information
+ *         schema:
+ *           $ref: '#/definitions/Customer'
+ *     responses:
+ *       200:
+ *         description: Successfully replaced
+ *       404:
+ *         description: Customer not found
+ *       400:
+ *         description: Invalid input
+ *
+ *   patch:
+ *     summary: Update an existing customer
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         type: string
+ *         required: true
+ *       - in: body
+ *         name: customer
+ *         description: The fields to update
+ *         schema:
+ *           type: object
+ *           properties:
+ *             CUST_NAME:
+ *               type: string
+ *             CUST_CITY:
+ *               type: string
+ *             WORKING_AREA:
+ *               type: string
+ *             CUST_COUNTRY:
+ *               type: string
+ *             GRADE:
+ *               type: integer
+ *             OPENING_AMT:
+ *               type: number
+ *             RECEIVE_AMT:
+ *               type: number
+ *             PAYMENT_AMT:
+ *               type: number
+ *             OUTSTANDING_AMT:
+ *               type: number
+ *             PHONE_NO:
+ *               type: string
+ *             AGENT_CODE:
+ *               type: string
+ *     responses:
+ *       200:
+ *         description: Successfully updated
+ *       404:
+ *         description: Customer not found
+ *       400:
+ *         description: Invalid input
+ *
+ *   delete:
+ *     summary: Delete an existing customer
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         type: string
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Successfully deleted
+ *       404:
+ *         description: Customer not found
  */
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
